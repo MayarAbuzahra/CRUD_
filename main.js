@@ -8,97 +8,48 @@ var data=document.getElementById('data')
 var search=document.getElementById('search')
 var delete_button=document.getElementById('deleteBtn')
 var add_button=document.getElementById('click')
-var courses=[]
-var course_name_regex=/^[A-Z]{4}[0-9]{4}$/;
+var courses
+if(JSON.parse(localStorage.getItem('courses'))==null){
+    courses=[]
+}
+else{
+    courses=JSON.parse(localStorage.getItem('courses'))
+    display_data()
+}
+var current_index=0
 
 //create course
 add_button.onclick=function(event){
     event.preventDefault();
-    if( !empty_input() ){
-        if(valid_course_name()){
-            var course={
-                course_name: course_name.value,
-                course_category: course_category.value,
-                course_price: course_price.value,
-                course_description: course_description.value,
-                course_capacity: course_capacity.value
-            }
-            courses.push(course);
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Course added successfully',
-                showConfirmButton: false,
-                timer: 1500
-            })
-            clear_inputs();
-            display_data();
-        }
-    }
-}
-
-//empty input check 
-function empty_input(){
-    if(course_name.value==""){
-        Swal.fire({
-            icon: 'error',
-            title: 'Course Name is empty!',
-            text: 'Fill it...'
-        })
-            return true;
-    }
-    else if(course_category.value==""){
-        Swal.fire({
-            title: 'Course Category is empty!',
-            icon: 'error',
-            text: 'Fill it...'
-        })
-            return true;
-    }
-    else if(course_price.value==""){
-            Swal.fire({
-            title: 'Course Price is empty!',
-            icon: 'error',
-            text: 'Fill it...'
-        })  
-            return true;
-    }
-    else if(course_description.value==""){
-        Swal.fire({
-            title: 'Course Description is empty!',
-            icon: 'error',
-            text: 'Fill it...'
-        }) 
-            return true;
-    }
-    else if(course_capacity.value==""){
-        Swal.fire({
-            title: 'Course Capacity is empty!',
-            icon: 'error',
-            text: 'Fill it...'
-        })
-            return true;
+    if(add_button.value=='Add Course'){
+        add_course()
     }
     else{
-        return false;
+        update_course()
     }
+    display_data()
+    clear_inputs()
+    course_name.classList.remove('is-valid')
 }
 
-//valid course name
-function valid_course_name(){
-    if(!(course_name_regex.test(course_name.value))){
-        Swal.fire({
-            title: 'Invalid Course Name, try again!',
-            showClass: {
-              popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-              popup: 'animate__animated animate__fadeOutUp'
-            }
-          })
-          return false;
-    }   
-    return true;
+//add course
+function add_course(){
+    var course={
+        course_name: course_name.value,
+        course_category: course_category.value,
+        course_price: course_price.value,
+        course_description: course_description.value,
+        course_capacity: course_capacity.value
+    }
+    courses.push(course);
+    localStorage.setItem('courses', JSON.stringify(courses))
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Course added successfully',
+        showConfirmButton: false,
+        timer: 1500
+    })
 }
 
 //clear inputs
@@ -122,7 +73,7 @@ function display_data(){
             <td>${courses[i].course_price}</td>
             <td>${courses[i].course_description}</td>
             <td>${courses[i].course_capacity}</td>
-            <td><button class="btn btn-info">Update</button></td>
+            <td><button class="btn btn-info" onclick="get_course(${i})">Update</button></td>
             <td><button class="btn btn-danger" onclick="delete_course(${i})">Delete</button></td>
         </tr>`
     }
@@ -142,6 +93,7 @@ function delete_course(index){
       }).then((result) => {
         if (result.isConfirmed) {
             courses.splice(index, 1)
+            localStorage.setItem('courses', JSON.stringify(courses))
             display_data()
           Swal.fire(
             'Deleted!',
@@ -165,6 +117,7 @@ delete_button.onclick=function(){
   }).then((result) => {
     if (result.isConfirmed) {
         courses = []
+        localStorage.setItem('courses', JSON.stringify(courses))
         data.innerHTML=''
       Swal.fire(
         'Deleted!',
@@ -188,10 +141,203 @@ search.onkeyup=function(){
                 <td>${courses[i].course_price}</td>
                 <td>${courses[i].course_description}</td>
                 <td>${courses[i].course_capacity}</td>
-                <td><button class="btn btn-info">Update</button></td>
+                <td><button class="btn btn-info" onclick="get_course(${i})">Update</button></td>
                 <td><button class="btn btn-danger" onclick="delete_course(${i})">Delete</button></td>
             </tr>`
         }
     }
     data.innerHTML=result; 
+}
+
+//get course
+function get_course(index){
+    var course=courses[index]
+    course_name.value=course.course_name
+    course_category.value=course.course_category
+    course_price.value=course.course_price
+    course_description.value=course.course_description
+    course_capacity.value=course.course_capacity
+    add_button.value='Update Course'
+    current_index=index
+}
+
+//update course
+function update_course(){
+    var course={
+        course_name: course_name.value,
+        course_category: course_category.value,
+        course_price: course_price.value,
+        course_description: course_description.value,
+        course_capacity: course_capacity.value
+    }
+    courses[current_index].course_name=course.course_name
+    courses[current_index].course_category=course.course_category
+    courses[current_index].course_price=course.course_price
+    courses[current_index].course_description=course.course_description
+    courses[current_index].course_capacity=course.course_capacity
+    localStorage.setItem('courses', JSON.stringify(courses))
+    add_button.value='Add Course'
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Course updated successfully',
+        showConfirmButton: false,
+        timer: 1500
+    })
+}
+
+//validation
+/* course name
+*  regex /^[A-Z][a-z]{2,10}$/
+*/
+course_name.onkeyup=function(){
+    var pattern=/^[A-Z][a-z]{2,10}$/
+    if(pattern.test(course_name.value)){
+        if(course_name.classList.contains('is-invalid')&&
+           document.getElementById('course_name_alert').classList.contains('d-block')){
+            course_name.classList.replace('is-invalid','is-valid')
+            document.getElementById('course_name_alert').classList.replace('d-block','d-none')
+           }
+           else{
+            course_name.classList.add('is-valid')
+            document.getElementById('course_name_alert').classList.replace('d-block','d-none')
+           }
+           add_button.removeAttribute('disabled')
+    }
+    else{
+        if(course_name.classList.contains('is-valid')&&
+           document.getElementById('course_name_alert').classList.contains('d-none')){
+            course_name.classList.replace('is-valid','is-invalid')
+            document.getElementById('course_name_alert').classList.replace('d-none','d-block')
+           }
+        else{
+            course_name.classList.add('is-invalid')
+            document.getElementById('course_name_alert').classList.replace('d-none','d-block')
+        }
+        add_button.setAttribute('disabled')
+    }
+}
+
+/* course category
+*  regex /^[A-Z][a-z]{2,20}$/
+*/
+course_category.onkeyup=function(){
+    var pattern=/^[A-Z][a-z]{2,20}$/
+    if(pattern.test(course_category.value)){
+        if(course_category.classList.contains('is-invalid')&&
+           document.getElementById('course_category_alert').classList.contains('d-block')){
+            course_category.classList.replace('is-invalid','is-valid')
+            document.getElementById('course_category_alert').classList.replace('d-block','d-none')
+           }
+           else{
+            course_category.classList.add('is-valid')
+            document.getElementById('course_category_alert').classList.replace('d-block','d-none')
+           }
+           add_button.removeAttribute('disabled')
+    }
+    else{
+        if(course_category.classList.contains('is-valid')&&
+           document.getElementById('course_category_alert').classList.contains('d-none')){
+            course_category.classList.replace('is-valid','is-invalid')
+            document.getElementById('course_category_alert').classList.replace('d-none','d-block')
+           }
+        else{
+            course_category.classList.add('is-invalid')
+            document.getElementById('course_category_alert').classList.replace('d-none','d-block')
+        }
+        add_button.setAttribute('disabled')
+    }
+}
+
+/* course price
+*  regex /^[0-9]{3,4}$/
+*/
+course_price.onkeyup=function(){
+    var pattern=/^[0-9]{3,4}$/
+    if(pattern.test(course_price.value)){
+        if(course_price.classList.contains('is-invalid')&&
+           document.getElementById('course_price_alert').classList.contains('d-block')){
+            course_price.classList.replace('is-invalid','is-valid')
+            document.getElementById('course_price_alert').classList.replace('d-block','d-none')
+           }
+           else{
+            course_price.classList.add('is-valid')
+            document.getElementById('course_price_alert').classList.replace('d-block','d-none')
+           }
+           add_button.removeAttribute('disabled')
+    }
+    else{
+        if(course_price.classList.contains('is-valid')&&
+           document.getElementById('course_price_alert').classList.contains('d-none')){
+            course_price.classList.replace('is-valid','is-invalid')
+            document.getElementById('course_price_alert').classList.replace('d-none','d-block')
+           }
+        else{
+            course_price.classList.add('is-invalid')
+            document.getElementById('course_price_alert').classList.replace('d-none','d-block')
+        }
+        add_button.setAttribute('disabled')
+    }
+}
+
+/* course description
+*  regex /^[A-Z][A-Za-z0-9\s]{3,120}$/
+*/
+course_description.onkeyup=function(){
+    var pattern=/^[A-Z][A-Za-z0-9\s]{3,120}$/
+    if(pattern.test(course_description.value)){
+        if(course_description.classList.contains('is-invalid')&&
+           document.getElementById('course_description_alert').classList.contains('d-block')){
+            course_description.classList.replace('is-invalid','is-valid')
+            document.getElementById('course_description_alert').classList.replace('d-block','d-none')
+           }
+           else{
+            course_description.classList.add('is-valid')
+            document.getElementById('course_description_alert').classList.replace('d-block','d-none')
+           }
+           add_button.removeAttribute('disabled')
+    }
+    else{
+        if(course_description.classList.contains('is-valid')&&
+           document.getElementById('course_description_alert').classList.contains('d-none')){
+            course_description.classList.replace('is-valid','is-invalid')
+            document.getElementById('course_description_alert').classList.replace('d-none','d-block')
+           }
+        else{
+            course_description.classList.add('is-invalid')
+            document.getElementById('course_description_alert').classList.replace('d-none','d-block')
+        }
+        add_button.setAttribute('disabled')
+    }
+}
+
+/* course capacity
+*  regex /^[0-9]{2,3}$/
+*/
+course_capacity.onkeyup=function(){
+    var pattern=/^[0-9]{2,3}$/
+    if(pattern.test(course_capacity.value)){
+        if(course_capacity.classList.contains('is-invalid')&&
+           document.getElementById('course_capacity_alert').classList.contains('d-block')){
+            course_capacity.classList.replace('is-invalid','is-valid')
+            document.getElementById('course_capacity_alert').classList.replace('d-block','d-none')
+           }
+           else{
+            course_capacity.classList.add('is-valid')
+            document.getElementById('course_capacity_alert').classList.replace('d-block','d-none')
+           }
+           add_button.removeAttribute('disabled')
+    }
+    else{
+        if(course_capacity.classList.contains('is-valid')&&
+           document.getElementById('course_capacity_alert').classList.contains('d-none')){
+            course_capacity.classList.replace('is-valid','is-invalid')
+            document.getElementById('course_capacity_alert').classList.replace('d-none','d-block')
+           }
+        else{
+            course_capacity.classList.add('is-invalid')
+            document.getElementById('course_capacity_alert').classList.replace('d-none','d-block')
+        }
+        add_button.setAttribute('disabled')
+    }
 }

@@ -24,20 +24,25 @@
                 <div class="mb-3">
                     <label for="">course name</label>
                     <input class="inputs form-control" type="text" placeholder="cource name" id="courseName">
+                    <div id="course_name_alert" class="text-danger small d-none">*Please start with capital letter</div>
                 </div>
                 <label for="">course category</label>
                 <input class="inputs form-control" type="text" placeholder="cource category" id="courseCategory">
+                <div id="course_category_alert" class="text-danger small d-none">*Please start with capital letter</div>
     
                 <label for="">course price</label>
                 <input class="inputs form-control" type="number" min="0" placeholder="cource price" id="coursePrice">
+                <div id="course_price_alert" class="text-danger small d-none">*Please type numbers only(from 3 to 4 digits)</div>
     
                 <label for="">course description</label>
                 <textarea class="inputs form-control" placeholder="course description" id="courseDescription"></textarea>
-    
+                <div id="course_description_alert" class="text-danger small d-none">*Please start with capital letter</div>
+
                 <label for="">course capacity</label>
                 <input class="inputs form-control" type="number" min="0" placeholder="cource capacity" id="courseCapacity">
-    
-                <input type="submit" value="Add Course" class="btn btn-outline-secondary mt-3" id="click"/>
+                <div id="course_capacity_alert" class="text-danger small d-none">*Please type numbers only(from 2 to 3 digits)</div>
+
+                <input type="submit" value="Add Course" disabled class="btn btn-outline-secondary mt-3" id="click"/>
                 <button class="btn btn-outline-secondary mt-3" type="reset">clear</button>
             </form>
         </div>
