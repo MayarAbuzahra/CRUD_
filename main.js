@@ -1,14 +1,14 @@
 //get input values
-var course_name=document.getElementById('courseName')
-var course_category=document.getElementById('courseCategory')
-var course_price=document.getElementById('coursePrice')
-var course_description=document.getElementById('courseDescription')
-var course_capacity=document.getElementById('courseCapacity')
-var data=document.getElementById('data')
-var search=document.getElementById('search')
-var delete_button=document.getElementById('deleteBtn')
-var add_button=document.getElementById('click')
-var courses
+let course_name=document.getElementById('courseName')
+let course_category=document.getElementById('courseCategory')
+let course_price=document.getElementById('coursePrice')
+let course_description=document.getElementById('courseDescription')
+let course_capacity=document.getElementById('courseCapacity')
+let data=document.getElementById('data')
+let search=document.getElementById('search')
+let delete_button=document.getElementById('deleteBtn')
+let add_button=document.getElementById('click')
+let courses
 if(JSON.parse(localStorage.getItem('courses'))==null){
     courses=[]
 }
@@ -16,7 +16,7 @@ else{
     courses=JSON.parse(localStorage.getItem('courses'))
     display_data()
 }
-var current_index=0
+let current_index=0
 
 //create course
 add_button.onclick=function(event){
@@ -34,7 +34,7 @@ add_button.onclick=function(event){
 
 //add course
 function add_course(){
-    var course={
+    let course={
         course_name: course_name.value,
         course_category: course_category.value,
         course_price: course_price.value,
@@ -63,8 +63,8 @@ function clear_inputs(){
 
 //read ==> display data in table
 function display_data(){
-    var result='';
-    for(var i=0; i<courses.length; i++){
+    let result='';
+    for(let i=0; i<courses.length; i++){
         result+=`
         <tr>
             <td>${i+1}</td>
@@ -130,8 +130,8 @@ delete_button.onclick=function(){
 
 //search operation
 search.onkeyup=function(){
-    var result='';
-    for(var i=0; i<courses.length; i++){
+    let result='';
+    for(let i=0; i<courses.length; i++){
         if(courses[i].course_name.toLowerCase().includes(search.value.toLowerCase())){
             result+=`
             <tr>
@@ -151,7 +151,7 @@ search.onkeyup=function(){
 
 //get course
 function get_course(index){
-    var course=courses[index]
+    let course=courses[index]
     course_name.value=course.course_name
     course_category.value=course.course_category
     course_price.value=course.course_price
@@ -163,7 +163,7 @@ function get_course(index){
 
 //update course
 function update_course(){
-    var course={
+    let course={
         course_name: course_name.value,
         course_category: course_category.value,
         course_price: course_price.value,
@@ -191,7 +191,7 @@ function update_course(){
 *  regex /^[A-Z][a-z]{2,10}$/
 */
 course_name.onkeyup=function(){
-    var pattern=/^[A-Z][a-z]{2,10}$/
+    let pattern=/^[A-Z][a-z]{2,10}$/
     if(pattern.test(course_name.value)){
         if(course_name.classList.contains('is-invalid')&&
            document.getElementById('course_name_alert').classList.contains('d-block')){
@@ -222,7 +222,7 @@ course_name.onkeyup=function(){
 *  regex /^[A-Z][a-z]{2,20}$/
 */
 course_category.onkeyup=function(){
-    var pattern=/^[A-Z][a-z]{2,20}$/
+    let pattern=/^[A-Z][a-z]{2,20}$/
     if(pattern.test(course_category.value)){
         if(course_category.classList.contains('is-invalid')&&
            document.getElementById('course_category_alert').classList.contains('d-block')){
@@ -253,7 +253,7 @@ course_category.onkeyup=function(){
 *  regex /^[0-9]{3,4}$/
 */
 course_price.onkeyup=function(){
-    var pattern=/^[0-9]{3,4}$/
+    let pattern=/^[0-9]{3,4}$/
     if(pattern.test(course_price.value)){
         if(course_price.classList.contains('is-invalid')&&
            document.getElementById('course_price_alert').classList.contains('d-block')){
@@ -284,7 +284,7 @@ course_price.onkeyup=function(){
 *  regex /^[A-Z][A-Za-z0-9\s]{3,120}$/
 */
 course_description.onkeyup=function(){
-    var pattern=/^[A-Z][A-Za-z0-9\s]{3,120}$/
+    let pattern=/^[A-Z][A-Za-z0-9\s]{3,120}$/
     if(pattern.test(course_description.value)){
         if(course_description.classList.contains('is-invalid')&&
            document.getElementById('course_description_alert').classList.contains('d-block')){
@@ -315,7 +315,7 @@ course_description.onkeyup=function(){
 *  regex /^[0-9]{2,3}$/
 */
 course_capacity.onkeyup=function(){
-    var pattern=/^[0-9]{2,3}$/
+    let pattern=/^[0-9]{2,3}$/
     if(pattern.test(course_capacity.value)){
         if(course_capacity.classList.contains('is-invalid')&&
            document.getElementById('course_capacity_alert').classList.contains('d-block')){
